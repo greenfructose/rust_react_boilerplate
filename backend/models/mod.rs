@@ -16,3 +16,10 @@ pub struct PaginationParams {
 impl PaginationParams {
     const MAX_PAGE_SIZE: u16 = 100;
 }
+
+
+pub mod user;
+
+pub mod user_session;
+
+pub mod permissions;

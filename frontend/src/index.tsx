@@ -1,3 +1,4 @@
+import { AuthProvider } from './hooks/useAuth'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
@@ -8,10 +9,12 @@ import { BrowserRouter } from 'react-router-dom'
 ReactDOM.render(
   <React.StrictMode>
     {/* CRA: Wrap */}
+<AuthProvider>
     <BrowserRouter>
       <App />
     </BrowserRouter>
     {/* CRA: Unwrap */}
+</AuthProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )

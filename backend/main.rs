@@ -54,6 +54,7 @@ async fn main() -> std::io::Result<()> {
             .data(mailer.clone())
             .service(
                 web::scope("/api")
+            .service(services::auth::endpoints(web::scope("/auth")))
                     .service(services::todos_service::endpoints(web::scope("/todos")))
                     .route("/health", web::get().to(|| HttpResponse::Ok().json(HealthCheckResponse { message: "healthy".to_string() })))
             )
