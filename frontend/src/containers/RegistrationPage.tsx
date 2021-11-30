@@ -5,6 +5,8 @@ import { useAuth } from '../hooks/useAuth'
 export const RegistrationPage = () => {
   const auth = useAuth()
   const history = useHistory()
+  const [first_name, setFirstName] = useState<string>('')
+  const [last_name, setLastName] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [processing, setProcessing] = useState<boolean>(false)
@@ -17,7 +19,7 @@ export const RegistrationPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ first_name, last_name, email, password }),
       })
     ).json()
     console.log(response)
@@ -29,6 +31,14 @@ export const RegistrationPage = () => {
     <div className="Form" style={{ textAlign: 'left' }}>
       <h1>Registration</h1>
       <br />
+      <div style={{ display: 'flex', flexFlow: 'column' }}>
+        <label>First Name</label>
+        <input value={first_name} onChange={(e) => setFirstName(e.target.value)} />
+      </div>
+      <div style={{ display: 'flex', flexFlow: 'column' }}>
+        <label>Last Name</label>
+        <input value={last_name} onChange={(e) => setLastName(e.target.value)} />
+      </div>
       <div style={{ display: 'flex', flexFlow: 'column' }}>
         <label>Email</label>
         <input value={email} onChange={(e) => setEmail(e.target.value)} />

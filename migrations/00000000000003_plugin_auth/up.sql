@@ -1,5 +1,7 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
   email TEXT NOT NULL,
   hash_password TEXT NOT NULL,
   activated BOOL NOT NULL DEFAULT FALSE,

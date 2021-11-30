@@ -24,7 +24,8 @@ pub struct User {
     Add columns here in the same order as the schema
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
     pub id: ID,
-
+    pub first_name: String,
+    pub last_name: String,
     pub email: String,
     pub hash_password: String,
     pub activated: bool,
@@ -42,6 +43,8 @@ pub struct UserChangeset {
     Don't include non-mutable columns
     (ex: id, created_at/updated_at)
     -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
+    pub first_name: String,
+    pub last_name: String,
     pub email: String,
     pub hash_password: String,
     pub activated: bool,

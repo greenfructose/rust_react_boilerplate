@@ -45,6 +45,8 @@ interface TodoChangeset {
 
 interface User {
   id: ID
+  first_name: string
+  last_name: string
   email: string
   hash_password: string
   activated: boolean
@@ -53,6 +55,8 @@ interface User {
 }
 
 interface UserChangeset {
+  first_name: string
+  last_name: string
   email: string
   hash_password: string
   activated: boolean

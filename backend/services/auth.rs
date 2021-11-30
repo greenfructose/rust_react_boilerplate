@@ -169,19 +169,19 @@ async fn login(
       _ => None
     };
   }
-  
+
   let user = User::find_by_email(&db, item.email);
-  
+
   if user.is_err() {
     return Ok(HttpResponse::build(StatusCode::UNAUTHORIZED).body("{ \"message\": \"Invalid credentials.\" }"));
   }
-  
+
   let user = user.unwrap();
 
   if !user.activated {
     return Ok(HttpResponse::build(StatusCode::BAD_REQUEST).body("{ \"message\": \"Account has not been activated.\" }"))
   }
-  
+
   let mut verifier = argonautica::Verifier::default();
   let is_valid = verifier
     .with_hash(&user.hash_password)
@@ -192,7 +192,7 @@ async fn login(
     })
     .verify()
     .unwrap();
-  
+
   if !is_valid {
     return Ok(HttpResponse::build(StatusCode::UNAUTHORIZED).body("{ \"message\": \"Invalid credentials.\" }"));
   }
@@ -200,7 +200,7 @@ async fn login(
   let permissions = Permission::for_user(&db, user.id);
   if permissions.is_err() { println!("{:#?}", permissions.err()); return Ok(HttpResponse::InternalServerError().body("{ \"message\": \"An internal server error occurred.\" }")) }
   let permissions = permissions.unwrap();
-  
+
   let access_token_claims = AccessTokenClaims {
     exp: (chrono::Utc::now() + chrono::Duration::minutes(15)).timestamp() as usize,
     sub: user.id,
@@ -213,7 +213,7 @@ async fn login(
     sub: user.id,
     token_type: "refresh_token".to_string()
   };
-  
+
   let access_token = encode(
     &Header::default(),
     &access_token_claims,
@@ -235,7 +235,7 @@ async fn login(
   if user_session.is_err() {
     return Ok(HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).body("{ \"message\": \"Could not create a session.\" }"));
   }
-  
+
   Ok(HttpResponse::build(StatusCode::OK)
     .cookie(Cookie::build(COOKIE_NAME, refresh_token.clone())
               .secure(true)
@@ -256,7 +256,7 @@ async fn logout(
   let db = pool.get().unwrap();
 
   let refresh_token_cookie = req.cookie(COOKIE_NAME);
-  
+
   if refresh_token_cookie.is_none() {
     return Ok(HttpResponse::build(StatusCode::UNAUTHORIZED).body(json!({
       "message": "Invalid session"
@@ -279,7 +279,7 @@ async fn logout(
   if is_deleted.is_err() {
     return Ok(HttpResponse::build(StatusCode::UNAUTHORIZED).body("{ \"message\": \"Could not delete session.\" }"));
   }
-  
+
   let mut builder = HttpResponse::Ok();
 
   if let Some(ref cookie) = refresh_token_cookie {
@@ -295,7 +295,7 @@ async fn refresh(
   req: web::HttpRequest
 ) -> Result<HttpResponse, AWError> {
   let db = pool.get().unwrap();
-  
+
   let cookie = req.cookie(COOKIE_NAME);
 
   if cookie.is_none() {
@@ -325,7 +325,7 @@ async fn refresh(
   }
 
   let session = UserSession::find_by_refresh_token(&db, refresh_token_str);
-  
+
   if session.is_err() {
     return Ok(HttpResponse::build(StatusCode::UNAUTHORIZED).body("{ \"message\": \"Invalid session.\" }"));
   }
@@ -348,7 +348,7 @@ async fn refresh(
     sub: session.user_id,
     token_type: "refresh_token".to_string()
   };
-  
+
   let access_token = encode(
     &Header::default(),
     &access_token_claims,
@@ -367,11 +367,11 @@ async fn refresh(
     refresh_token: refresh_token_str.clone(),
     device: session.device
   });
-  
+
   if session_update.is_err() {
     return Ok(HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).body("{ \"message\": \"Could not update the session.\" }"));
   }
-  
+
   Ok(HttpResponse::build(StatusCode::OK)
     .cookie(Cookie::build(COOKIE_NAME, refresh_token_str)
               .secure(true)
@@ -437,15 +437,15 @@ async fn register(
     sub: user.id,
     token_type: "activation_token".to_string()
   };
-  
+
   let token = encode(
     &Header::default(),
     &registration_claims,
     &EncodingKey::from_secret(std::env::var("SECRET_KEY").unwrap().as_ref())
   ).unwrap();
-  
+
   mail::auth_register::send(&mailer, &user.email, &format!("http://localhost:8080/activate?token={token}", token=token));
-  
+
   Ok(HttpResponse::build(StatusCode::OK).body("{ \"message\": \"Registered! Check your email to activate your account.\" }"))
 }
 
@@ -471,7 +471,7 @@ async fn activate(
   if token.is_err() {
     return Ok(HttpResponse::build(StatusCode::UNAUTHORIZED).body("{ \"message\": \"Invalid token.\" }"));
   }
-  
+
   let token = token.unwrap();
 
   if !token.claims.token_type.eq_ignore_ascii_case("activation_token") {
@@ -483,7 +483,7 @@ async fn activate(
   if user.is_err() {
     return Ok(HttpResponse::build(StatusCode::BAD_REQUEST).body("{ \"message\": \"Invalid token.\" }"));
   }
-  
+
   let user = user.unwrap();
 
   if user.activated {
@@ -495,13 +495,13 @@ async fn activate(
     email: user.email.clone(),
     hash_password: user.hash_password
   });
-  
+
   if activated_user.is_err() {
     return Ok(HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).body("{ \"message\": \"Could not activate user.\" }"));
   }
 
   mail::auth_activated::send(&mailer, &user.email);
-  
+
   Ok(HttpResponse::build(StatusCode::OK).body("{ \"message\": \"Activated!\" }"))
 }
 
@@ -533,26 +533,26 @@ async fn forgot_password(
     // if !user.activated {
     //   return Ok(HttpResponse::build(StatusCode::BAD_REQUEST).body("{ \"message\": \"Account has not been activated\" }"))
     // }
-    
+
     let reset_token_claims = ResetTokenClaims {
       exp: (chrono::Utc::now() + chrono::Duration::hours(24)).timestamp() as usize,
       sub: user.id,
       token_type: "reset_token".to_string()
     };
-  
+
     let reset_token = encode(
       &Header::default(),
       &reset_token_claims,
       &EncodingKey::from_secret(std::env::var("SECRET_KEY").unwrap().as_ref())
     ).unwrap();
-    
+
     let link = &format!("http://localhost:8080/reset?token={reset_token}", reset_token=reset_token);
     mail::auth_recover_existent_account::send(&mailer, &user.email, link);
   } else {
     let link = &format!("http://localhost:8080/register");
     mail::auth_recover_nonexistent_account::send(&mailer, &item.email, link);
   }
-  
+
   Ok(HttpResponse::build(StatusCode::OK).body("{ \"message\": \"Please check your email.\" }"))
 }
 
@@ -580,7 +580,7 @@ async fn change_password(
       "message": "The new password must be different"
     })))
   }
-  
+
   let db = pool.get().unwrap();
 
   let user = User::read(&db, auth.user_id);
@@ -607,13 +607,13 @@ async fn change_password(
     })
     .verify()
     .unwrap();
-  
+
   if !is_old_password_valid {
     return Ok(HttpResponse::build(StatusCode::BAD_REQUEST).body(json!({
       "message": "Invalid credentials"
     })));
   }
-  
+
   let mut hasher = argonautica::Hasher::default();
   let new_hash = hasher
       .with_password(&item.new_password)
@@ -635,7 +635,7 @@ async fn change_password(
       "message": "Could not update password"
     })))
   }
-  
+
   mail::auth_password_changed::send(&mailer, &user.email);
 
   Ok(HttpResponse::build(StatusCode::OK).body(json!({
@@ -662,7 +662,7 @@ async fn reset_password(
       "message": "Missing password"
     })))
   }
-  
+
   let token = decode::<ResetTokenClaims>(
     &item.reset_token,
     &DecodingKey::from_secret(std::env::var("SECRET_KEY").unwrap().as_ref()),
@@ -684,13 +684,13 @@ async fn reset_password(
   if user.is_err() {
     return Ok(HttpResponse::build(StatusCode::BAD_REQUEST).body("{ \"message\": \"Invalid token.\" }"));
   }
-  
+
   let user = user.unwrap();
 
   if !user.activated {
     return Ok(HttpResponse::build(StatusCode::BAD_REQUEST).body("{ \"message\": \"Account has not been activated\" }"))
   }
-  
+
   let mut hasher = argonautica::Hasher::default();
   let new_hash = hasher
       .with_password(&item.new_password)
@@ -710,9 +710,9 @@ async fn reset_password(
   if update.is_err() {
     return Ok(HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).body("{ \"message\": \"Could not update password\" }"))
   }
-  
+
   mail::auth_password_reset::send(&mailer, &user.email);
-  
+
   Ok(HttpResponse::build(StatusCode::OK).body(json!({
     "message": "Password reset"
   })))
