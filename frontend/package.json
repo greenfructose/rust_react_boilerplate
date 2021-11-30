@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.1.7",
-    "concurrently": "^6.2.1"
+    "concurrently": "^6.2.1",
+    "react-query": "^3.21.0"
   }
 }

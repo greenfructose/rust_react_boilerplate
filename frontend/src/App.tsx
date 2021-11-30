@@ -12,7 +12,9 @@ import { Home } from './containers/Home'
 import { Todos } from './containers/Todo'
 import { Route, useHistory } from 'react-router-dom'
 
-const App = () => {
+if (process.env.NODE_ENV === 'development') require('./setupDevelopment')
+    
+    const App = () => {
   useAuthCheck()
   const auth = useAuth()
     
