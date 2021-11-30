@@ -186,7 +186,7 @@ export const AccountPage = () => {
       )}
       {!auth.isAuthenticated && (
         <div>
-          <a href="#" onClick={() => history.push('/login')}>
+          <a className="App-link" href="#" onClick={() => history.push('/login')}>
             Login to view your account detials
           </a>
         </div>

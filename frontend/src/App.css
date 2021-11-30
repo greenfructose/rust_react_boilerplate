@@ -16,7 +16,7 @@
 
 .App-nav-header {
   display: flex;
-  background: goldenrod;
+  background: #173e43;
   color: white;
   height: 65px;
   padding: 0 30px;
@@ -25,9 +25,9 @@
 }
 
 body {
-  background-color: palegoldenrod;
+  background-color: #dddfd4;
   font-size: calc(10px + 2vmin);
-  color: goldenrod;
+  color: #173e43;
 }
 
 .App-link {
@@ -60,7 +60,7 @@ body {
 .NavButton {
   height: 65px;
   padding: 0 15px;
-  background-color: goldenrod;
+  background-color: #173e43;
   cursor: pointer;
   display: flex;
   flex-flow: column;
@@ -68,7 +68,8 @@ body {
 }
 
 .NavButton:hover {
-  background-color: #d9b048;
+  background-color: #3fb0ac;
+  color: white;
 }
 
 .Form {
@@ -84,4 +85,7 @@ body {
 
 .Form button {
   padding: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
+

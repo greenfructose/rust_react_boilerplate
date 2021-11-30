@@ -42,6 +42,7 @@ export const LoginPage = () => {
         </button>
       </div>
       <a
+        className="App-link"
         style={{ marginTop: '30px' }}
         href="#"
         onClick={() => history.push('/register')}
@@ -49,6 +50,7 @@ export const LoginPage = () => {
         Don't have an account? Click here to register.
       </a>
       <a
+        className="App-link"
         style={{ marginTop: '30px' }}
         href="#"
         onClick={() => history.push('/recovery')}
