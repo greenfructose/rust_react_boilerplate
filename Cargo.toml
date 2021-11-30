@@ -1,0 +1,47 @@
+[[bin]]
+name = "fullstack"
+path = "bin/fullstack.rs"
+
+[[bin]]
+name = "rust_react_boilerplate"
+path = "backend/main.rs"
+
+[dependencies]
+actix-files = "0.5.0"
+actix-http = "2.2.0"
+actix-web = "3.3.2"
+actix-web-httpauth = "0.5.0"
+anyhow = "1.0.33"
+derive_more = "0.99.11"
+dotenv = "0.15.0"
+env_logger = "0.8.1"
+futures-util = "0.3.8"
+jsonwebtoken = "7.2.0"
+lettre = "0.9.5"
+lettre_email = "0.9.4"
+serde_derive = "1.0.117"
+serde_json = "1.0.64"
+tsync = "1.2.1"
+
+[dependencies.chrono]
+features = ["serde"]
+version = "0.4.19"
+
+[dependencies.diesel]
+default-features = false
+features = ["postgres", "uuid", "r2d2", "chrono", "32-column-tables"]
+version = "1.4.5"
+
+[dependencies.serde]
+features = ["derive"]
+version = "1.0.117"
+
+[dependencies.uuid]
+features = ["serde", "v4"]
+version = "0.8.1"
+
+[package]
+default-run = "rust_react_boilerplate"
+edition = "2021"
+name = "rust_react_boilerplate"
+version = "0.1.0"
