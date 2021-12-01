@@ -1,4 +1,14 @@
 table! {
+    profiles (id) {
+        id -> Int4,
+        user_id -> Int4,
+        first_name -> Text,
+        last_name -> Text,
+        email -> Text,
+    }
+}
+
+table! {
     role_permissions (role) {
         role -> Text,
         permission -> Text,
@@ -55,11 +65,13 @@ table! {
     }
 }
 
+joinable!(profiles -> users (user_id));
 joinable!(user_permissions -> users (user_id));
 joinable!(user_roles -> users (user_id));
 joinable!(user_sessions -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
+    profiles,
     role_permissions,
     todos,
     user_permissions,

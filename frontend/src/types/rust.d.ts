@@ -32,6 +32,21 @@ interface UserRole {
   created_at: UTC
 }
 
+interface Profile {
+  id: ID
+  user_id: ID
+  first_name: string
+  last_name: string
+  email: string
+}
+
+interface ProfileChangeset {
+  user_id: ID
+  first_name: string
+  last_name: string
+  email: string
+}
+
 interface Todo {
   id: ID
   text: string
@@ -94,6 +109,10 @@ interface AccessTokenClaims {
   sub: ID
   token_type: string
   permissions: Array<Permission>
+}
+
+interface ProfileJson {
+  text: string
 }
 
 interface Todo {

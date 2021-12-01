@@ -1,6 +1,7 @@
 extern crate argonautica;
 use crate::extractors::auth::Auth;
 use actix_http::http::StatusCode;
+use crate::models::profile::{Profile, ProfileChangeset};
 use crate::models::user::{User, UserChangeset};
 use crate::models::user_session::{UserSession, UserSessionChangeset};
 use crate::models::permissions::Permission;
@@ -14,6 +15,7 @@ use serde_json::json;
 use actix_web::{delete, get, post, Error as AWError};
 use actix_web::{web, HttpResponse, HttpMessage};
 use actix_http::cookie::{Cookie, SameSite};
+use crate::schema::profiles::dsl::profiles;
 
 const COOKIE_NAME: &'static str = "request_token";
 
@@ -435,7 +437,12 @@ async fn register(
     email: item.email,
     hash_password: hash
   }).unwrap();
-
+    Profile::create(&db, &ProfileChangeset {
+    user_id: user.id.clone(),
+    first_name: user.first_name.clone(),
+    last_name: user.last_name.clone(),
+    email: user.email.clone(),
+  }).unwrap();
   let registration_claims = RegistrationClaims {
     exp: (chrono::Utc::now() + chrono::Duration::days(30)).timestamp() as usize,
     sub: user.id,

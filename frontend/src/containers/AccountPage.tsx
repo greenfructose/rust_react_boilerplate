@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { useProfile } from '../hooks/useProfile'
 
 export const AccountPage = () => {
   const auth = useAuth()
@@ -105,13 +106,15 @@ export const AccountPage = () => {
     setProcessing(false)
   }
 
+const profile = useProfile(1)
+
   return (
     <div style={{ textAlign: 'left' }}>
       <h1>Account</h1>
       <br />
       {auth.isAuthenticated && (
         <div>
-          User # {auth.parsedToken?.sub}
+          User # {profile.firstName}
           <div className="Form" style={{ textAlign: 'left' }}>
             <h1>Permissions</h1>
             <pre>

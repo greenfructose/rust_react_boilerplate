@@ -23,3 +23,5 @@ pub mod user;
 pub mod user_session;
 
 pub mod permissions;
+
+pub mod profile;
