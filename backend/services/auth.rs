@@ -386,6 +386,8 @@ async fn refresh(
 
 #[derive(Serialize, Deserialize)]
 struct RegisterInput {
+  first_name: String,
+  last_name: String,
   email: String,
   password: String
 }
@@ -428,6 +430,8 @@ async fn register(
 
   let user = User::create(&db, &UserChangeset {
     activated: false,
+    first_name: item.first_name,
+    last_name: item.last_name,
     email: item.email,
     hash_password: hash
   }).unwrap();
@@ -492,6 +496,8 @@ async fn activate(
 
   let activated_user = User::update(&db, user.id, &UserChangeset {
     activated: true,
+    first_name: user.first_name.clone(),
+    last_name: user.last_name.clone(),
     email: user.email.clone(),
     hash_password: user.hash_password
   });
@@ -625,6 +631,8 @@ async fn change_password(
       .unwrap();
 
   let updated_user = User::update(&db, auth.user_id, &UserChangeset {
+    first_name: user.first_name.clone(),
+    last_name: user.last_name.clone(),
     email: user.email.clone(),
     hash_password: new_hash,
     activated: user.activated
@@ -702,6 +710,8 @@ async fn reset_password(
       .unwrap();
 
   let update = User::update(&db, user.id, &UserChangeset {
+    first_name: user.first_name.clone(),
+    last_name: user.last_name.clone(),
     email: user.email.clone(),
     hash_password: new_hash,
     activated: user.activated
