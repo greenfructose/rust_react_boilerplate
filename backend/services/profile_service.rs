@@ -16,8 +16,12 @@ async fn read(
 
     use crate::schema::profiles::dsl::*;
     let result = profiles.filter(user_id.eq(item_id)).first::<Profile>(&db);
-
     Ok(result
         .map(|item| HttpResponse::Ok().json(item))
         .map_err(|_| HttpResponse::NotFound())?)
+}
+
+pub fn endpoints(scope: actix_web::Scope) -> actix_web::Scope {
+    return scope
+        .service(read)
 }

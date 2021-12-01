@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { useProfile } from '../hooks/useProfile'
+import { ProfileContext, useProfile } from '../hooks/useProfile'
 
 export const AccountPage = () => {
   const auth = useAuth()
@@ -106,7 +106,7 @@ export const AccountPage = () => {
     setProcessing(false)
   }
 
-const profile = useProfile(1)
+const profile = useContext(useProfile(1))
 
   return (
     <div style={{ textAlign: 'left' }}>
@@ -114,7 +114,9 @@ const profile = useProfile(1)
       <br />
       {auth.isAuthenticated && (
         <div>
-          User # {profile.firstName}
+          <ProfileContext.Provider value={profile}>
+          User # {profile.first_name}
+          </ProfileContext.Provider>
           <div className="Form" style={{ textAlign: 'left' }}>
             <h1>Permissions</h1>
             <pre>

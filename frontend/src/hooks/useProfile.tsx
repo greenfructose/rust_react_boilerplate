@@ -8,28 +8,36 @@ import React, {
 
 
 interface ProfileContextInterface {
-  firstName: string | undefined
-  lastName: string | undefined
-  email: string | undefined
+  first_name: string
+  last_name: string
+  email: string
 //   setFirstName: (firstName: string | undefined) => void
 //   setLastName: (lastName: string | undefined) => void
 //   setEmail: (email: string | undefined) => void
 }
 
-const context = createContext<ProfileContextInterface | null>(null);
-
-const getProfile = (id: number) => {
-    const response = fetch(`/api/profile_service/${id}`)
-    const jsonResponse = response.json()
-    const profileContext: ProfileContextInterface = {
-        firstName: jsonResponse.first_name,
-        lastName: jsonResponse.last_name,
-        email: jsonResponse.email
-    }
-    return profileContext
+const errorContext = {
+    first_name: 'Error',
+    last_name: 'Error',
+    email: 'Error'
 }
 
-export const App = () => (
-    <context.Provider value={getProfile()}
-)
+export let ProfileContext = createContext(errorContext);
+
+
+
+export const useProfile = (user_id: number) => {
+    fetch(`/api/profile/${user_id}`)
+    .then((response) => response.json())
+    .then((profile) => {
+        ProfileContext = createContext ({
+        first_name: profile.first_name,
+        last_name: profile.last_name,
+        email: profile.email
+    })
+    });
+    return ProfileContext
+//         <ProfileContext.Provider value={profileContext}>...</ProfileContext.Provider>
+}
+
 

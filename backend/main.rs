@@ -63,7 +63,8 @@ async fn main() -> std::io::Result<()> {
 
         let mut api_scope = web::scope("/api")
             .service(services::auth::endpoints(web::scope("/auth")))
-            .service(services::todos_service::endpoints(web::scope("/todos")));
+            .service(services::todos_service::endpoints(web::scope("/todos")))
+            .service(services::profile_service::endpoints(web::scope("/profile")));
 
         #[cfg(debug_assertions)]
         {
